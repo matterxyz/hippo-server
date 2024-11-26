@@ -8,7 +8,11 @@ let package = Package(
     platforms: [.macOS(.v14), .iOS(.v17)],
     products: [
         .executable(name: "hippod", targets: ["Server"]),
-        .library(name: "HippoServer", targets: ["App"])
+        .library(name: "HippoServer", targets: ["App"]),
+        .library(name: "DeviceCheck", targets: ["DeviceCheck"]),
+        .library(name: "HummingbirdDeviceCheck", targets: ["HummingbirdDeviceCheck"]),
+        .library(name: "Hippo", targets: ["Hippo"]),
+        .library(name: "HippoAWS", targets: ["HippoAWS"]),
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-log.git", from: "1.6.1"),
