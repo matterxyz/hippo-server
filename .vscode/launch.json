@@ -1,0 +1,22 @@
+{
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:hippo-server}",
+            "name": "Debug hippod",
+            "program": "${workspaceFolder:hippo-server}/.build/debug/hippod",
+            "preLaunchTask": "swift: Build Debug hippod"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:hippo-server}",
+            "name": "Release hippod",
+            "program": "${workspaceFolder:hippo-server}/.build/release/hippod",
+            "preLaunchTask": "swift: Build Release hippod"
+        }
+    ]
+}
