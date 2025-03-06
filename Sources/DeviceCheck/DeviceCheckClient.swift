@@ -148,9 +148,9 @@ public actor DeviceCheckClient: DeviceCheck {
                 ResponseError.notFound.logError()
                 throw ResponseError.notFound
             default:
-                Logger.appleRequest.critical("This response isn't handled \(response.status)")
+                Logger.appleRequest.critical("This response isn't handled \(response.status)  \(dataString)")
                 Logger.appleRequest.debug("This response isn't handled")
-                throw ResponseError.badResponse("Error unknown")
+                throw ResponseError.badResponse("Error unknown \(dataString)")
             }
 
     }
