@@ -149,7 +149,8 @@ public func makeApplication(
     HippoController(
         metadataTable: metadataTable,
         assetsHostname: assetsHostname,
-        assetsBucket: assetsBucket
+        assetsBucket: assetsBucket,
+        deviceCheck: deviceCheck
     ).addRoutes(to: router.group("/v1"))
 
     if let withAdditionalRoutes {

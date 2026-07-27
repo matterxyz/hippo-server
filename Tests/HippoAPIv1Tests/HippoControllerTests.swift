@@ -7,12 +7,16 @@ import Hippo
 
 @testable import HippoAPIv1
 
-func makeTestApp(deviceCheck: any DeviceCheck, hippo: Hippo) async throws -> some ApplicationProtocol {
+func makeTestApp(deviceCheck: (any DeviceCheck)?, hippo: Hippo) async throws -> some ApplicationProtocol {
   let router = Router()
   router.add(middleware: LogRequestsMiddleware(.info))
-  router.add(middleware: HummingbirdDeviceCheck(using: deviceCheck))
 
-  HippoController(metadataTable: "metadata-table", assetsHostname: "test-hippo.example.com", assetsBucket: "assets").addRoutes(to: router.group("/v1"))
+  HippoController(
+    metadataTable: "metadata-table",
+    assetsHostname: "test-hippo.example.com",
+    assetsBucket: "assets",
+    deviceCheck: deviceCheck
+  ).addRoutes(to: router.group("/v1"))
 
   return Application(router: router)
 }
@@ -168,6 +172,29 @@ final class HippoControllerTests: XCTestCase {
     try await app.test(.router) { client in
       let response = try await client.execute(uri: "v1/object/this-is-a-test-no-object-sectret", method: .delete, headers: [.deviceToken : "token"], body: body)
       XCTAssertEqual(response.status, .forbidden)
+    }
+  }
+
+  func testHippoController_withoutDeviceCheck_allowsRequestWithoutToken() async throws {
+    let app = try await makeTestApp(
+      deviceCheck: nil,
+      hippo: Hippo(
+        assetsHostName: "test-hippo.example.com",
+        assetsBucketName: "assets",
+        metadataTable: "metadata-table",
+        objectStorage: MockObjectStorage()
+      )
+    )
+    try await app.test(.router) { client in
+      let response = try await client.execute(
+        uri: "/v1/object?\(Parameter.clientReferenceOwner)=testReference&\(Parameter.clientReferenceID)=testID",
+        method: .get,
+        headers: [:],
+        body: nil
+      )
+      // Without DeviceCheck middleware, missing token reaches the handler.
+      // Current getObject uses empty owner/reference and throws .notFound on storage miss.
+      XCTAssertEqual(response.status, .notFound)
     }
   }
 }
