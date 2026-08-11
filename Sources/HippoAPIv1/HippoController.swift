@@ -1,6 +1,7 @@
 import Foundation
 import Hummingbird
 import DeviceCheck
+import HummingbirdDeviceCheck
 import HippoAWS
 import Logging
 import SotoCore
@@ -12,23 +13,36 @@ public struct HippoController: Sendable {
     let metadataTable: String
     let assetsHostname: String
     let assetsBucket: String
+    let deviceCheck: (any DeviceCheck)?
 
     public init(
         metadataTable: String,
         assetsHostname: String,
-        assetsBucket: String
+        assetsBucket: String,
+        deviceCheck: (any DeviceCheck)? = nil
     ) {
         self.metadataTable = metadataTable
         self.assetsHostname = assetsHostname
         self.assetsBucket = assetsBucket
+        self.deviceCheck = deviceCheck
     }
 
     public func addRoutes(to group: RouterGroup<some RequestContext>) {
         let objectGroup = group.group("/object")
-        objectGroup.get(use: self.getObject)
-            .post(use: self.createObject)
-            .get("/{path}", use: self.fetchObject)
-            .delete("/{path}", use: self.deleteObject)
+        if let deviceCheck {
+            objectGroup
+                .add(middleware: HummingbirdDeviceCheck(using: deviceCheck))
+                .get(use: self.getObject)
+                .post(use: self.createObject)
+                .get("/{path}", use: self.fetchObject)
+                .delete("/{path}", use: self.deleteObject)
+        } else {
+            objectGroup
+                .get(use: self.getObject)
+                .post(use: self.createObject)
+                .get("/{path}", use: self.fetchObject)
+                .delete("/{path}", use: self.deleteObject)
+        }
     }
 
     @Sendable func getObject(request: Request, context: some RequestContext) async throws -> Response {
