@@ -22,6 +22,24 @@ final class AppTests: XCTestCase {
             XCTAssertEqual(response.status, .ok)
         }
     }
+
+    func testApp_hasNoV1ObjectRoutes() async throws {
+        let app = try await makeApplication(hostname: "127.0.0.1", port: 8600, testDeviceCheckClient: TestDeviceCheckClient())
+
+        try await app.test(.router) { client in
+            let requests: [(uri: String, method: HTTPRequest.Method)] = [
+                ("/v1/object?client_reference_owner=owner&client_reference_id=reference", .get),
+                ("/v1/object", .post),
+                ("/v1/object/path", .get),
+                ("/v1/object/path", .delete),
+            ]
+
+            for request in requests {
+                let response = try await client.executeRequest(uri: request.uri, method: request.method, headers: [:], body: nil)
+                XCTAssertEqual(response.status, .notFound, "\(request.method) \(request.uri)")
+            }
+        }
+    }
 }
 // Test device client to make a working application
 struct TestDeviceCheckClient: DeviceCheck {

@@ -46,7 +46,7 @@ let package = Package(
         .target(
             name: "App",
             dependencies: [
-                .byName(name: "HippoAPIv1"),
+                .byName(name: "DeviceCheck"),
                 .byName(name: "Hippo"),
                 .byName(name: "HippoAWS"),
                 .product(name: "Hummingbird", package: "hummingbird"),
@@ -63,7 +63,6 @@ let package = Package(
             name: "HippoAWS",
             dependencies: [
                 .product(name: "SotoS3", package: "soto"),
-                .product(name: "SotoDynamoDB", package: "soto"),
                 .byName(name: "Hippo")
             ],
             swiftSettings: [
@@ -77,19 +76,6 @@ let package = Package(
             name: "AppTests",
             dependencies: [
                 .byName(name: "App"),
-				.product(name: "HummingbirdTesting", package: "hummingbird"),
-            ]
-        ),
-        .target(name: "HippoAPIv1", dependencies: [
-            .byName(name: "HippoAWS"),
-            .byName(name: "HummingbirdDeviceCheck"),
-            .product(name: "Hummingbird", package: "Hummingbird"),
-            .product(name: "Logging", package: "swift-log")
-        ]),
-        .testTarget(
-            name: "HippoAPIv1Tests",
-            dependencies: [
-                .byName(name: "HippoAPIv1"),
 				.product(name: "HummingbirdTesting", package: "hummingbird"),
             ]
         ),

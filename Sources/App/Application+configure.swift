@@ -8,7 +8,6 @@
 import Hummingbird
 import Hippo
 import HippoAWS
-import HippoAPIv1
 import Logging
 import Foundation
 import DeviceCheck
@@ -132,26 +131,11 @@ public func makeApplication(
         fatalError()
     }
 
-    guard 
-        let metadataTable = environment.get("METADATA_TABLE")
-    else {
-        logger.error("Missing required variable METADATA_TABLE")
-        fatalError()
-    }
-    
     let hippo = Hippo(
         assetsHostName: assetsHostname,
         assetsBucketName: assetsBucket,
-        metadataTable: metadataTable,
         objectStorage: S3ObjectStorage(bucket: assetsBucket)
     )
-
-    HippoController(
-        metadataTable: metadataTable,
-        assetsHostname: assetsHostname,
-        assetsBucket: assetsBucket,
-        deviceCheck: deviceCheck
-    ).addRoutes(to: router.group("/v1"))
 
     if let withAdditionalRoutes {
         withAdditionalRoutes(router, hippo, deviceCheck)

@@ -11,18 +11,15 @@ import Logging
 public final class Hippo: Sendable {
     public let assetsHostName: String
     public let assetsBucketName: String
-    public let metadataTable: String
     let objectStorage: ObjectStorage
 
     public init(
         assetsHostName: String,
         assetsBucketName: String,
-        metadataTable: String,
         objectStorage: some ObjectStorage
     ) {
         self.assetsHostName = assetsHostName
         self.assetsBucketName = assetsBucketName
-        self.metadataTable = metadataTable
         self.objectStorage = objectStorage
     }
 

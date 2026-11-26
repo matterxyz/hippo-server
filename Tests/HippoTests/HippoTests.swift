@@ -39,7 +39,6 @@ final class HippoTests: XCTestCase {
         let hippo = Hippo(
             assetsHostName: "hippo-tests.example.com",
             assetsBucketName: "hippo-test-assets",
-            metadataTable: "hippo-v1-tests",
             objectStorage: MockObjectStorage()
         )
 
@@ -56,7 +55,6 @@ final class HippoTests: XCTestCase {
         let hippo = Hippo(
             assetsHostName: "test.host.name",
             assetsBucketName: "test.bucket.name",
-            metadataTable: "hippo-v1-tests",
             objectStorage: MockObjectStorage()
         )
         XCTAssertEqual(hippo.assetsHostName, "test.host.name")
