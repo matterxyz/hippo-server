@@ -1,7 +1,6 @@
 import Foundation
 import SotoCore
 import SotoS3
-import SotoDynamoDB
 import Crypto
 import Logging
 
@@ -22,12 +21,10 @@ enum AWSWrapperError: LocalizedError {
 public class AWSWrapper {
     let client: AWSClient
     let s3: S3
-    let dynamo: DynamoDB
 
     public init(client: AWSClient = AWSClientFactory()) {
         self.client = client
         self.s3 = S3(client: client)
-        self.dynamo = DynamoDB(client: client, region: .useast1)
     }
 
     deinit {
